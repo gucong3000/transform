@@ -104,8 +104,20 @@
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
-    
-
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<!--[if lte IE 8]>
+<script src="https://github.com/gucong3000/transform/raw/master/build/jquery.transform.js"></script>
+<![endif]-->
+<script>
+jQuery(function($) {
+    var rotation = 0,
+        title = $("#project_title").css({
+            display: document.querySelector ? "inline-block" : "inline"
+        });
+    window.setInterval(function() {
+        title.css("transform", "rotate(" + (++rotation) + "deg)");
+    }, 20);
+});
+</script>
   </body>
 </html>
