@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>CSS Transforms in IE</title>
+<script type="text/javascript" src="external/jquery.min.js"></script>
+<!--[if lte IE 8]>
+<script src="../build/jquery.transform.js"></script>
+<![endif]-->
+<style type="text/css" media="screen">
+body,
+html {
+    font-family: Arial;
+    font-size: 12px;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+.test {
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    behavior: url(../build/transform.htc);
+    position: absolute;
+    background: green;
+    padding: 10px;
+    height: 100px;
+    width: 100px;
+    left: 100px;
+    top: 100px;
+    color: white;
+}
+</style>
+<script>
+jQuery(function($) {
+    var rotation = 0;
+    window.setInterval(function() {
+        $(".test").css("transform", "rotate(" + (++rotation) + "deg)");
+    }, 20);
+});
+</script>
+</head>
+
+<body style="margin: 0; padding: 0;">
+
+    <div style="position: absolute; z-index: 100; top: 100px; left: 0px; width: 100%; border-top: 1px solid black;"></div>
+    <div style="position: absolute; z-index: 100; top: 165px; left: 0px; width: 100%; border-top: 1px solid red;"></div>
+    <div style="position: absolute; z-index: 100; top: 0px; left: 100px; height: 100%; border-left: 1px solid black;"></div>
+    <div style="position: absolute; z-index: 100; top: 0px; left: 165px; height: 100%; border-left: 1px solid red;"></div>
+
+    <div class="test">
+        Test element
+        <div style="height: 20px; background: #fff; border: 2px solid red; margin: 10px; color: black;">I"m another div!</div>
+    </div>
+
+    <p style="margin: 20px;">If everything is working properly, the below element should be rotated by 45 degrees
+        <br/>in both Internet Explorer, Safari and Firefox (>= 3.5).</p>
+
+</body>
+
+</html>
