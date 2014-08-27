@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Transform : css3 transform for ie">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Transform</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/gucong3000/transform">View on GitHub</a>
+
+          <h1 id="project_title">Transform</h1>
+          <h2 id="project_tagline">css3 transform for ie</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/gucong3000/transform/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/gucong3000/transform/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="transform-v003" class="anchor" href="#transform-v003"><span class="octicon octicon-link"></span></a>transform v0.0.3</h1>
+
+<p>css3 transform for ie</p>
+
+<p>transform是一个为IE6-8提供css3 transform属性功能的js库，它的使用非常简单</p>
+
+<p>transform is a provider of css3 js library functions transform property for IE6-8, it's very simple to use </p>
+
+<h2>
+<a name="%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F-usage" class="anchor" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F-usage"><span class="octicon octicon-link"></span></a>使用方式 Usage</h2>
+
+<p>jquery方式/jquery way:</p>
+
+<div class="highlight highlight-HTML"><pre><span class="c">&lt;!--[if lte IE 8]&gt;</span>
+<span class="c">    &lt;script src="build/jquery.transform.js"&gt;&lt;/script&gt;</span>
+<span class="c">&lt;![endif]--&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+<span class="nx">jQuery</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">".test"</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s2">"transform"</span><span class="p">,</span> <span class="s2">"rotate(45deg)"</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+<p>或htc方式/Or htc way:</p>
+
+<div class="highlight highlight-HTML"><pre><span class="nt">&lt;style&gt;</span>
+<span class="nc">.test</span> <span class="p">{</span>
+    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+    <span class="o">-</span><span class="n">ms</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+    <span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+    <span class="n">behavior</span><span class="o">:</span> <span class="sx">url(build/transform.htc)</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">&lt;/style&gt;</span>
+</pre></div>
+
+<h2>
+<a name="%E5%8F%82%E8%80%83" class="anchor" href="#%E5%8F%82%E8%80%83"><span class="octicon octicon-link"></span></a>参考</h2>
+
+<ul>
+<li><a href="http://gucong3000.github.io/css-handbook/properties/transform/transform.htm">CSS参考手册中的transform详解</a></li>
+<li>
+<a href="http://css3please.com/">css3please.com</a>是一个在线辅助css3编写的小工具</li>
+<li>jQuery 1.8以上版本内置了自动处理css前缀(如<code>-webkit-</code>，<code>-moz-</code>等)的功能，<code>$(".someclass").css()</code> 方法无需手写前缀</li>
+<li>
+<a href="http://leaverou.github.io/prefixfree/">Prefixfree</a> 是一个让你实现免前缀写css的工具，它还有插件让jQuery(1.8以下)也免前缀</li>
+<li>
+<a href="https://github.com/postcss/autoprefixer">Autoprefixer</a> 是一个在css预编或压缩译时自动补全前缀的工具，拥有<a href="https://www.npmjs.org/package/grunt-autoprefixer">grunt插件</a>、<a href="https://www.npmjs.org/package/gulp-autoprefixer/">gulp插件</a>和<a href="https://sublime.wbond.net/packages/Autoprefixer">sublime插件</a>
+</li>
+</ul><h2>
+<a name="reference" class="anchor" href="#reference"><span class="octicon octicon-link"></span></a>Reference</h2>
+
+<ul>
+<li><a href="http://gucong3000.github.io/css-handbook/properties/transform/transform.htm">CSS reference manual transform Detailed</a></li>
+<li>
+<a href="http://css3please.com/">css3please.com</a> is an online tool for the preparation of small auxiliary css3</li>
+<li>JQuery 1.8 or later built automatic processing css prefix (eg <code>-webkit-</code>, <code>-moz-</code>, etc.) functions, <code>$(".someclass").css()</code> method does not require a handwritten prefix.</li>
+<li>
+<a href="http://leaverou.github.io/prefixfree/">Prefixfree</a> is a prefix-free writing to let you realize css tool, it also has plug-ins let jQuery (1.8 or less) are also free prefix</li>
+<li>
+<a href="https://github.com/postcss/autoprefixer">Autoprefixer</a> is an auto-complete when the prefix pre-programmed or compress css translation tool, with <a href="https://www.npmjs.org/package/grunt-autoprefixer">grunt plug</a>, <a href="https://www.npmjs.org/package/gulp-autoprefixer/">gulp plug</a> and <a href="https://sublime.wbond.net/packages/Autoprefixer">sublime plug</a>
+</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Transform maintained by <a href="https://github.com/gucong3000">gucong3000</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
