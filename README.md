@@ -46,6 +46,6 @@ jQuery(function($) {
 ## Reference
 - [CSS reference manual transform Detailed](http://gucong3000.github.io/css-handbook/properties/transform/transform.htm)
 - [css3please.com](http://css3please.com/) is an online tool for the preparation of small auxiliary css3
-- JQuery 1.8 or later built automatic processing css prefix (eg `-webkit-`, `-moz-`, etc.) functions, `$ (" someclass. ") Css ()` method does not require a handwritten prefix.
+- JQuery 1.8 or later built automatic processing css prefix (eg `-webkit-`, `-moz-`, etc.) functions, `$(".someclass").css()` method does not require a handwritten prefix.
 - [Prefixfree](http://leaverou.github.io/prefixfree/) is a prefix-free writing to let you realize css tool, it also has plug-ins let jQuery (1.8 or less) are also free prefix
 - [Autoprefixer](https://github.com/postcss/autoprefixer) is an auto-complete when the prefix pre-programmed or compress css translation tool, with [grunt plug](https://www.npmjs.org/package/grunt-autoprefixer), [gulp plug](https://www.npmjs.org/package/gulp-autoprefixer/) and [sublime plug](https://sublime.wbond.net/packages/Autoprefixer)
