@@ -110,9 +110,11 @@
 <![endif]-->
 <script>
 jQuery(function($) {
-    var rotation = 0,
+    var lteIE7 = !document.querySelector,
+        rotation = 0,
         title = $("#project_title").css({
-            display: document.querySelector ? "inline-block" : "inline"
+            display: lteIE7 ? "inline" : "inline-block",
+            position: lteIE7 ? "absolute" : ""
         });
     window.setInterval(function() {
         title.css("transform", "rotate(" + (++rotation) + "deg)");
