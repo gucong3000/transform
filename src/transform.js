@@ -77,23 +77,34 @@
 		return Math.sin(Math.asin(m) + angle(ang));
 	}
 
+	// 遍历数组
+	function forEach(arr, callback) {
+		for (var i = 0; i < arr.length; i++) {
+			callback.call(arr[i], i, arr[i]);
+		}
+	}
+
 	//获取元素left或top
 	function offset(elem, porp) {
 		elem.runtimeStyle[porp] = elem.currentStyle[porp];
 		return elem.runtimeStyle["pixel" + porp.substr(0, 1).toUpperCase() + porp.slice(1)];
 	}
 
-	function setMatrix(elem, value) {
+	function getTransform(elem) {
+		return elem.currentStyle.transform || "none";
+	}
+
+	function setTransform(elem, value) {
 
 		elem.runtimeStyle.position = elem.runtimeStyle.left = elem.runtimeStyle.top = "";
 		setFilter(elem, "Matrix", {
 			Enabled: false
 		});
 
+		value = value || getTransform(elem);
+
 		if (/^\s*none\s*$/i.test(value)) {
 			return value;
-		} else if (!value) {
-			value = elem.currentStyle.transform;
 		}
 
 		setZoom(elem);
@@ -117,9 +128,9 @@
 			i,
 			j;
 
-		for (i = 0; i < trans.length; i++) {
-			val = trans[i].match(/\(\s*(.+)\s*\)/)[1];
-			if (/matrix/i.test(trans[i])) {
+		forEach(trans, function(i, tran) {
+			val = tran.match(/\(\s*(.+)\s*\)/)[1];
+			if (/matrix/i.test(tran)) {
 				val = val.split(",");
 				for (j = 0; j < val.length; j++) {
 					val[j] = parseFloat(val[j]);
@@ -130,41 +141,41 @@
 				m22 = val[3];
 				dx = val[4] || dx;
 				dy = val[5] || dy;
-			} else if (/translateX/i.test(trans[i])) {
+			} else if (/translateX/i.test(tran)) {
 				dx += parseFloat(val);
-			} else if (/translateY/i.test(trans[i])) {
+			} else if (/translateY/i.test(tran)) {
 				dy += parseFloat(val);
-			} else if (/translate/i.test(trans[i])) {
+			} else if (/translate/i.test(tran)) {
 				val = getVal(val);
 				dx += val.x;
 				dy += val.y;
-			} else if (/scaleX/i.test(trans[i])) {
+			} else if (/scaleX/i.test(tran)) {
 				m11 *= parseFloat(val);
 				//m22 = -m22;
-			} else if (/scaleY/i.test(trans[i])) {
+			} else if (/scaleY/i.test(tran)) {
 				m22 *= parseFloat(val);
 				//m11 = -m11;
-			} else if (/scale/i.test(trans[i])) {
+			} else if (/scale/i.test(tran)) {
 				val = getVal(val, true);
 				m11 *= val.x;
 				m22 *= val.y;
-			} else if (/rotate/i.test(trans[i])) {
+			} else if (/rotate/i.test(tran)) {
 				val = angle(val);
 				m12 = -Math.sin(Math.asin(-m12) + val);
 				m21 = skew(m21, val);
 				val = Math.cos(val);
 				m11 *= val;
 				m22 *= val;
-			} else if (/skewX/i.test(trans[i])) {
+			} else if (/skewX/i.test(tran)) {
 				m12 = skew(m12, val);
-			} else if (/skewY/i.test(trans[i])) {
+			} else if (/skewY/i.test(tran)) {
 				m21 = skew(m21, val);
-			} else if (/skew/i.test(trans[i])) {
+			} else if (/skew/i.test(tran)) {
 				val = getVal(val);
 				m12 = skew(m12, val.x);
 				m21 = skew(m21, val.y);
 			}
-		}
+		});
 
 		// set linear transformation via Matrix Filter
 		setFilter(elem, "Matrix", {
@@ -195,20 +206,37 @@
 			}
 			if (!$.cssHooks.transform) {
 				$.cssHooks.transform = {
-					set: setMatrix,
-					get: function(elem) {
-						return elem.currentStyle.transform || "none";
-					}
+					set: setTransform,
+					get: getTransform
 				};
 			}
-			if (node) {
-				var val = node.currentStyle.transform;
-				if (val) {
-					$(node).css("transform", val);
-				}
+		}
+		if (node) {
+			setTransform(node);
+			var timer,
+				locker,
+				value = getTransform(node);
+
+			if (!/^\s*none\s*$/i.test(value)) {
+				forEach(["move", "resize", "mouseenter", "mouseleave", "mousedown", "focus", "blur"], function(i, eventType) {
+					node.attachEvent("on" + eventType, function() {
+						clearTimeout(timer);
+						locker = true;
+						timer = setTimeout(function() {
+							setTransform(node);
+							locker = false;
+						}, 0);
+					});
+				});
+				node.attachEvent("onpropertychange", function() {
+					if (!locker) {
+						locker = true;
+						setTransform(node);
+						locker = false;
+					}
+				});
 			}
-		} else if (node) {
-			setMatrix(node);
+
 		}
 	}
 })();
