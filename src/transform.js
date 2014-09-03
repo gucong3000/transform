@@ -2,9 +2,12 @@
 	/* global element: true */
 	/* jshint jquery: true */
 	"use strict";
-	var $ = window.jQuery,
-		doc,
-		node;
+	var strTransform = "transform",
+		$ = window.jQuery,
+		value = "none",
+		timer,
+		node,
+		doc;
 
 	try {
 		//run as htc file
@@ -79,164 +82,164 @@
 
 	// 遍历数组
 	function forEach(arr, callback) {
-		for (var i = 0; i < arr.length; i++) {
-			callback.call(arr[i], i, arr[i]);
+		if (arr) {
+			for (var i = 0; i < arr.length; i++) {
+				callback.call(arr[i], i, arr[i]);
+			}
 		}
 	}
 
-	//获取元素left或top
+	// 获取元素left或top
 	function offset(elem, porp) {
 		elem.runtimeStyle[porp] = elem.currentStyle[porp];
 		return elem.runtimeStyle["pixel" + porp.substr(0, 1).toUpperCase() + porp.slice(1)];
 	}
 
+	// 获取transform取值
 	function getTransform(elem) {
 		return elem.currentStyle.transform || "none";
 	}
 
+	// 按transform语法设置Matrix滤镜
 	function setTransform(elem, value) {
-
 		elem.runtimeStyle.position = elem.runtimeStyle.left = elem.runtimeStyle.top = "";
 		setFilter(elem, "Matrix", {
 			Enabled: false
 		});
 
-		value = value || getTransform(elem);
+		var trans = value || getTransform(elem);
 
-		if (/^\s*none\s*$/i.test(value)) {
-			return value;
-		}
+		if (!/^\s*none\s*$/i.test(value)) {
+			setZoom(elem);
 
-		setZoom(elem);
-
-		if (/^static$/i.test(elem.currentStyle.position)) {
-			elem.runtimeStyle.position = "relative";
-		}
-
-		var m11 = 1,
-			m12 = 0,
-			m21 = 0,
-			m22 = 1,
-			dx = 0,
-			dy = 0,
-			trans = value.match(/\w+\([^\)]*\)/g),
-			x = offset(elem, "left"),
-			y = offset(elem, "top"),
-			w = elem.offsetWidth,
-			h = elem.offsetHeight,
-			val,
-			i,
-			j;
-
-		forEach(trans, function(i, tran) {
-			val = tran.match(/\(\s*(.+)\s*\)/)[1];
-			if (/matrix/i.test(tran)) {
-				val = val.split(",");
-				for (j = 0; j < val.length; j++) {
-					val[j] = parseFloat(val[j]);
-				}
-				m11 = val[0];
-				m21 = val[1];
-				m12 = val[2];
-				m22 = val[3];
-				dx = val[4] || dx;
-				dy = val[5] || dy;
-			} else if (/translateX/i.test(tran)) {
-				dx += parseFloat(val);
-			} else if (/translateY/i.test(tran)) {
-				dy += parseFloat(val);
-			} else if (/translate/i.test(tran)) {
-				val = getVal(val);
-				dx += val.x;
-				dy += val.y;
-			} else if (/scaleX/i.test(tran)) {
-				m11 *= parseFloat(val);
-				//m22 = -m22;
-			} else if (/scaleY/i.test(tran)) {
-				m22 *= parseFloat(val);
-				//m11 = -m11;
-			} else if (/scale/i.test(tran)) {
-				val = getVal(val, true);
-				m11 *= val.x;
-				m22 *= val.y;
-			} else if (/rotate/i.test(tran)) {
-				val = angle(val);
-				m12 = -Math.sin(Math.asin(-m12) + val);
-				m21 = skew(m21, val);
-				val = Math.cos(val);
-				m11 *= val;
-				m22 *= val;
-			} else if (/skewX/i.test(tran)) {
-				m12 = skew(m12, val);
-			} else if (/skewY/i.test(tran)) {
-				m21 = skew(m21, val);
-			} else if (/skew/i.test(tran)) {
-				val = getVal(val);
-				m12 = skew(m12, val.x);
-				m21 = skew(m21, val.y);
+			if (/^static$/i.test(elem.currentStyle.position)) {
+				elem.runtimeStyle.position = "relative";
 			}
-		});
 
-		// set linear transformation via Matrix Filter
-		setFilter(elem, "Matrix", {
-			M11: m11,
-			M12: m12,
-			M21: m21,
-			M22: m22,
-			Enabled: true,
-			SizingMethod: "auto expand"
-		});
+			var m11 = 1,
+				m12 = 0,
+				m21 = 0,
+				m22 = 1,
+				dx = 0,
+				dy = 0,
+				x = offset(elem, "left"),
+				y = offset(elem, "top"),
+				w = elem.offsetWidth,
+				h = elem.offsetHeight,
+				val,
+				i,
+				j;
 
-		// bounding box dimensions
-		// IE has updated these values based on transform set above
-		// determine how far origin has shifted
-		// IE has updated these values based on transform set above
+			trans = trans.match(/\w+\([^\)]*\)/g);
+
+			forEach(trans, function(i, tran) {
+				val = tran.match(/\(\s*(.+)\s*\)/)[1];
+				if (/matrix/i.test(tran)) {
+					val = val.split(",");
+					for (j = 0; j < val.length; j++) {
+						val[j] = parseFloat(val[j]);
+					}
+					m11 = val[0];
+					m21 = val[1];
+					m12 = val[2];
+					m22 = val[3];
+					dx = val[4] || dx;
+					dy = val[5] || dy;
+				} else if (/translateX/i.test(tran)) {
+					dx += parseFloat(val);
+				} else if (/translateY/i.test(tran)) {
+					dy += parseFloat(val);
+				} else if (/translate/i.test(tran)) {
+					val = getVal(val);
+					dx += val.x;
+					dy += val.y;
+				} else if (/scaleX/i.test(tran)) {
+					m11 *= parseFloat(val);
+					//m22 = -m22;
+				} else if (/scaleY/i.test(tran)) {
+					m22 *= parseFloat(val);
+					//m11 = -m11;
+				} else if (/scale/i.test(tran)) {
+					val = getVal(val, true);
+					m11 *= val.x;
+					m22 *= val.y;
+				} else if (/rotate/i.test(tran)) {
+					val = angle(val);
+					m12 = -Math.sin(Math.asin(-m12) + val);
+					m21 = skew(m21, val);
+					val = Math.cos(val);
+					m11 *= val;
+					m22 *= val;
+				} else if (/skewX/i.test(tran)) {
+					m12 = skew(m12, val);
+				} else if (/skewY/i.test(tran)) {
+					m21 = skew(m21, val);
+				} else if (/skew/i.test(tran)) {
+					val = getVal(val);
+					m12 = skew(m12, val.x);
+					m21 = skew(m21, val.y);
+				}
+			});
+
+			// set linear transformation via Matrix Filter
+			setFilter(elem, "Matrix", {
+				M11: m11,
+				M12: m12,
+				M21: m21,
+				M22: m22,
+				Enabled: true,
+				SizingMethod: "auto expand"
+			});
+
+			// bounding box dimensions
+			// IE has updated these values based on transform set above
+			// determine how far origin has shifted
+			// IE has updated these values based on transform set above
 
 
-		elem.runtimeStyle.pixelLeft = dx + x - ((elem.offsetWidth - w) / 2);
-		elem.runtimeStyle.pixelTop = dy + y - ((elem.offsetHeight - h) / 2);
+			elem.runtimeStyle.pixelLeft = dx + x - ((elem.offsetWidth - w) / 2);
+			elem.runtimeStyle.pixelTop = dy + y - ((elem.offsetHeight - h) / 2);
 
-		return "matrix(" + [m11, m21, m12, m22, dx, dy].join(", ") + ")";
+			if (value) {
+				return "matrix(" + [m11, m21, m12, m22, dx, dy].join(", ") + ")";
+			}
+		}
+	}
+
+	// 如果transform发生变化则调用一次setTransform，htc专用
+	function transformChange() {
+		var newVal = getTransform(node);
+		if (newVal !== value) {
+			value = newVal;
+			setTransform(node, value);
+		}
 	}
 
 	if (doc.documentMode < 9 || !doc.querySelector) {
+		// 注册为jQuery插件
 		if ($) {
 			if (!$.cssHooks) {
 				$.cssHooks = {};
 			}
-			if (!$.cssHooks.transform) {
-				$.cssHooks.transform = {
-					set: setTransform,
+			if (!$.cssHooks[strTransform]) {
+				$.cssHooks[strTransform] = {
+					set: function(elem, value) {
+						elem.style.removeAttribute(strTransform);
+						return setTransform(elem, value);
+					},
 					get: getTransform
 				};
 			}
 		}
+		// 如果在htc环境运行
 		if (node) {
-			setTransform(node);
-			var timer,
-				locker,
-				value = getTransform(node);
-
-			if (!/^\s*none\s*$/i.test(value)) {
-				forEach(["move", "resize", "mouseenter", "mouseleave", "mousedown", "focus", "blur"], function(i, eventType) {
-					node.attachEvent("on" + eventType, function() {
-						clearTimeout(timer);
-						locker = true;
-						timer = setTimeout(function() {
-							setTransform(node);
-							locker = false;
-						}, 0);
-					});
+			transformChange();
+			forEach(["propertychange", "move", "resize", "mouseenter", "mouseleave", "mousedown", "focus", "blur"], function(i, eventType) {
+				node.attachEvent("on" + eventType, function() {
+					clearTimeout(timer);
+					timer = setTimeout(transformChange, 0);
 				});
-				node.attachEvent("onpropertychange", function() {
-					if (!locker) {
-						locker = true;
-						setTransform(node);
-						locker = false;
-					}
-				});
-			}
-
+			});
 		}
 	}
 })();

@@ -4,9 +4,6 @@
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 <title>CSS Transforms in IE</title>
 <script type="text/javascript" src="external/jquery.min.js"></script>
-<!--[if lte IE 8]>
-<script src="../build/jquery.transform.js"></script>
-<![endif]-->
 <style type="text/css" media="screen">
 body,
 html {
@@ -30,13 +27,35 @@ html {
     top: 100px;
     color: white;
 }
+.test:hover {
+    -webkit-transform: rotate(80deg);
+    -ms-transform: rotate(80deg);
+    transform: rotate(80deg);
+}
 </style>
 <script>
 jQuery(function($) {
-    var rotation = 0;
-    window.setInterval(function() {
-        $(".test").css("transform", "rotate(" + (++rotation) + "deg)");
-    }, 20);
+    var test = $(".test"),
+        rotation,
+        timer;
+
+    function start() {
+        stop();
+        rotation = 0;
+        timer = setInterval(function() {
+            test.css("transform", "rotate(" + (++rotation) + "deg)");
+        }, 20);
+        return false;
+    }
+
+    function stop() {
+        clearInterval(timer);
+        test.css("transform", "");
+        return false;
+    }
+
+    $(".start").click(start);
+    $(".stop").click(stop);
 });
 </script>
 </head>
@@ -48,13 +67,17 @@ jQuery(function($) {
     <div style="position: absolute; z-index: 100; top: 0px; left: 100px; height: 100%; border-left: 1px solid black;"></div>
     <div style="position: absolute; z-index: 100; top: 0px; left: 165px; height: 100%; border-left: 1px solid red;"></div>
 
-    <div class="test">
+    <a href="#" class="test">
         Test element
         <div style="height: 20px; background: #fff; border: 2px solid red; margin: 10px; color: black;">I"m another div!</div>
-    </div>
+    </a>
 
-    <p style="margin: 20px;">If everything is working properly, the below element should be rotated by 45 degrees
-        <br/>in both Internet Explorer, Safari and Firefox (>= 3.5).</p>
+    <p style="margin: 20px;">
+        If everything is working properly, the below element should be rotated by 45 degrees<br>
+        in both Internet Explorer, Safari and Firefox (>= 3.5).<br>
+        <a href="#" class="start">start</a>
+        <a href="#" class="stop">stop</a>
+    </p>
 
 </body>
 
