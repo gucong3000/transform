@@ -89,10 +89,10 @@
 		}
 	}
 
-	// 获取元素left或top
+	// 获取元素bottom、right、left或top
 	function offset(elem, porp) {
-		elem.runtimeStyle[porp] = elem.currentStyle[porp];
-		return elem.runtimeStyle["pixel" + porp.substr(0, 1).toUpperCase() + porp.slice(1)];
+		var val = elem.runtimeStyle[porp] = elem.currentStyle[porp];
+		return /^auto$/i.test(val) ? NaN : elem.runtimeStyle["pixel" + porp.substr(0, 1).toUpperCase() + porp.slice(1)];
 	}
 
 	// 获取transform取值
@@ -102,18 +102,24 @@
 
 	// 按transform语法设置Matrix滤镜
 	function setTransform(elem, value) {
-		elem.runtimeStyle.position = elem.runtimeStyle.left = elem.runtimeStyle.top = "";
+		var runtimeStyle = elem.runtimeStyle;
+		runtimeStyle.position = runtimeStyle.bottom = runtimeStyle.right = runtimeStyle.left = runtimeStyle.top = "";
 		setFilter(elem, "Matrix", {
 			Enabled: false
 		});
 
-		var trans = value || getTransform(elem);
+		var trans = value || getTransform(elem),
+			position = elem.currentStyle.position,
+			absolute;
 
 		if (!/^\s*none\s*$/i.test(value)) {
 			setZoom(elem);
 
-			if (/^static$/i.test(elem.currentStyle.position)) {
-				elem.runtimeStyle.position = "relative";
+			if (/^static$/i.test(position)) {
+				runtimeStyle.position = "relative";
+				absolute = false;
+			} else {
+				absolute = /^absolute$/i.test(position);
 			}
 
 			var m11 = 1,
@@ -122,8 +128,12 @@
 				m22 = 1,
 				dx = 0,
 				dy = 0,
-				x = offset(elem, "left"),
-				y = offset(elem, "top"),
+				x = absolute ? elem.offsetLeft : 0,
+				y = absolute ? elem.offsetTop : 0,
+				bottom = offset(elem, "bottom"),
+				right = offset(elem, "right"),
+				left = offset(elem, "left"),
+				top = offset(elem, "top"),
 				w = elem.offsetWidth,
 				h = elem.offsetHeight,
 				val,
@@ -196,9 +206,20 @@
 			// determine how far origin has shifted
 			// IE has updated these values based on transform set above
 
-
-			elem.runtimeStyle.pixelLeft = dx + x - ((elem.offsetWidth - w) / 2);
-			elem.runtimeStyle.pixelTop = dy + y - ((elem.offsetHeight - h) / 2);
+			if (isNaN(bottom)) {
+				runtimeStyle.pixelTop = (top || x) + dy - ((elem.offsetHeight - h) / 2);
+				runtimeStyle.bottom = "";
+			} else {
+				runtimeStyle.pixelBottom = bottom - dy + ((elem.offsetHeight - h) / 2);
+				runtimeStyle.top = "";
+			}
+			if (isNaN(right)) {
+				runtimeStyle.pixelLeft = (left || y) + dx - ((elem.offsetWidth - w) / 2);
+				runtimeStyle.right = "";
+			} else {
+				runtimeStyle.pixelRight = right - dx + ((elem.offsetWidth - w) / 2);
+				runtimeStyle.left = "";
+			}
 
 			if (value) {
 				return "matrix(" + [m11, m21, m12, m22, dx, dy].join(", ") + ")";
