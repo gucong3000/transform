@@ -229,11 +229,14 @@
 
 	// 如果transform发生变化则调用一次setTransform，htc专用
 	function transformChange() {
-		var newVal = getTransform(node);
-		if (newVal !== value) {
-			value = newVal;
-			setTransform(node, value);
-		}
+		clearTimeout(timer);
+		timer = setTimeout(function(){
+			var newVal = getTransform(node);
+			if (newVal !== value) {
+				value = newVal;
+				setTransform(node, value);
+			}
+		}, 0);
 	}
 
 	if (doc.documentMode < 9 || !doc.querySelector) {
@@ -256,10 +259,7 @@
 		if (node) {
 			transformChange();
 			forEach(["propertychange", "move", "resize", "mouseenter", "mouseleave", "mousedown", "focus", "blur"], function(i, eventType) {
-				node.attachEvent("on" + eventType, function() {
-					clearTimeout(timer);
-					timer = setTimeout(transformChange, 0);
-				});
+				node.attachEvent("on" + eventType, transformChange);
 			});
 		}
 	}

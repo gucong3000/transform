@@ -1,4 +1,4 @@
-transform v0.0.6
+transform v0.0.7
 =========
 
 css3 transform for ie
