@@ -97,7 +97,7 @@
 
 	// 获取transform取值
 	function getTransform(elem) {
-		return elem.currentStyle.transform || "none";
+		return elem.currentStyle[strTransform] || "none";
 	}
 
 	// 按transform语法设置Matrix滤镜
@@ -230,7 +230,7 @@
 	// 如果transform发生变化则调用一次setTransform，htc专用
 	function transformChange() {
 		clearTimeout(timer);
-		timer = setTimeout(function(){
+		timer = setTimeout(function() {
 			var newVal = getTransform(node);
 			if (newVal !== value) {
 				value = newVal;
@@ -240,27 +240,22 @@
 	}
 
 	if (doc.documentMode < 9 || !doc.querySelector) {
-		// 注册为jQuery插件
-		if ($) {
-			if (!$.cssHooks) {
-				$.cssHooks = {};
-			}
-			if (!$.cssHooks[strTransform]) {
-				$.cssHooks[strTransform] = {
-					set: function(elem, value) {
-						elem.style.removeAttribute(strTransform);
-						return setTransform(elem, value);
-					},
-					get: getTransform
-				};
-			}
-		}
 		// 如果在htc环境运行
 		if (node) {
 			transformChange();
 			forEach(["propertychange", "move", "resize", "mouseenter", "mouseleave", "mousedown", "focus", "blur"], function(i, eventType) {
 				node.attachEvent("on" + eventType, transformChange);
 			});
+		}
+		// 注册为jQuery插件
+		if ($ && !$.cssHooks[strTransform]) {
+			$.cssHooks[strTransform] = {
+				set: function(elem, value) {
+					elem.style.removeAttribute(strTransform);
+					return setTransform(elem, value);
+				},
+				get: getTransform
+			};
 		}
 	}
 })();
