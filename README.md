@@ -37,14 +37,14 @@ jQuery(function($) {
 
 ## 参考
 
-- [CSS参考手册中的transform详解](http://gucong3000.github.io/css-handbook/properties/transform/transform.htm)
+- [CSS参考手册中的transform详解](http://gucong3000.github.io/css-book/properties/transform/transform.htm)
 - [css3please.com](http://css3please.com/)是一个在线辅助css3编写的小工具
 - jQuery 1.8以上版本内置了自动处理css前缀(如`-webkit-`，`-moz-`等)的功能，`$(".someclass").css()` 方法无需手写前缀
 - [Prefixfree](http://leaverou.github.io/prefixfree/) 是一个让你实现免前缀写css的工具，它还有插件让jQuery(1.8以下)也免前缀
 - [Autoprefixer](https://github.com/postcss/autoprefixer) 是一个在css预编或压缩译时自动补全前缀的工具，拥有[grunt插件](https://www.npmjs.org/package/grunt-autoprefixer)、[gulp插件](https://www.npmjs.org/package/gulp-autoprefixer/)和[sublime插件](https://sublime.wbond.net/packages/Autoprefixer)
 
 ## Reference
-- [CSS reference manual transform Detailed](http://gucong3000.github.io/css-handbook/properties/transform/transform.htm)
+- [CSS reference manual transform Detailed](http://gucong3000.github.io/css-book/properties/transform/transform.htm)
 - [css3please.com](http://css3please.com/) is an online tool for the preparation of small auxiliary css3
 - JQuery 1.8 or later built automatic processing css prefix (eg `-webkit-`, `-moz-`, etc.) functions, `$(".someclass").css()` method does not require a handwritten prefix.
 - [Prefixfree](http://leaverou.github.io/prefixfree/) is a prefix-free writing to let you realize css tool, it also has plug-ins let jQuery (1.8 or less) are also free prefix
