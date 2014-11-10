@@ -3,6 +3,7 @@
 	/* jshint jquery: true */
 	"use strict";
 	var strTransform = "transform",
+		isNaN = window.isNaN,
 		$ = window.jQuery,
 		value = "none",
 		timer,
@@ -137,7 +138,6 @@
 				w = elem.offsetWidth,
 				h = elem.offsetHeight,
 				val,
-				i,
 				j;
 
 			trans = trans.match(/\w+\([^\)]*\)/g);
@@ -207,14 +207,14 @@
 			// IE has updated these values based on transform set above
 
 			if (isNaN(bottom)) {
-				runtimeStyle.pixelTop = (top || x) + dy - ((elem.offsetHeight - h) / 2);
+				runtimeStyle.pixelTop = (isNaN(top) ? y : top) + dy - ((elem.offsetHeight - h) / 2);
 				runtimeStyle.bottom = "";
 			} else {
 				runtimeStyle.pixelBottom = bottom - dy + ((elem.offsetHeight - h) / 2);
 				runtimeStyle.top = "";
 			}
 			if (isNaN(right)) {
-				runtimeStyle.pixelLeft = (left || y) + dx - ((elem.offsetWidth - w) / 2);
+				runtimeStyle.pixelLeft = (isNaN(left) ? x : left) + dx - ((elem.offsetWidth - w) / 2);
 				runtimeStyle.right = "";
 			} else {
 				runtimeStyle.pixelRight = right - dx + ((elem.offsetWidth - w) / 2);
