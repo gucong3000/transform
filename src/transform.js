@@ -1,6 +1,5 @@
 (function() {
 	/* global element: true */
-	/* jshint jquery: true */
 	"use strict";
 	var strTransform = "transform",
 		isNaN = window.isNaN,
